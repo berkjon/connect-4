@@ -28,13 +28,9 @@ $(document).ready(function() {
   }
 
 
-  Game.prototype.winCheck = function(){
-   // logic for win checking on this.boardState
-  }
 
   Game.prototype.nextTurn = function(){
     this.boardState.turnCounter++;
-    console.log(this.boardState.turnCounter);
   }
 
   Game.prototype.turnColor = function(){
@@ -83,7 +79,8 @@ $(document).ready(function() {
     var currentColNum = whatColumnWasClicked(event);
     if (updateBoardState(currentColNum)) {
       renderBoard(game.boardState);
-      // winCheck(game.boardState);
+      game.winCheck(game.boardState.lastPosition[1], game.boardState.lastPosition[0]);
+      console.log("last position: "+game.boardState.lastPosition)
       game.nextTurn();
       game.turnColor();
     }; // pass the column number to new function that updates the array
@@ -107,7 +104,7 @@ $(document).ready(function() {
     currentCol = game.boardState.boardArray[clickedColumnNumber-1]
     for (var x = 0; x<currentCol.length; x++){
       if (currentCol[x] === 'e'){
-        game.boardState.lastPosition = [x, clickedColumnNumber-1];
+        game.boardState.lastPosition = [clickedColumnNumber-1, x];
         currentCol[x] = game.boardState.player;
         return successfulMove = true;
       }
@@ -116,19 +113,75 @@ $(document).ready(function() {
   }
 
 
+  Game.prototype.winCheck = function(rowNum, colNum){
+    var that = this;
+    var countColorRight = function(rowNum, colNum) { //need third arg of column
+      var count = 0
+      for(var x = (colNum+1); x<7; x++) { //7 should be ref col clicked up to 7
+        var rightColor = that.boardState.boardArray[colNum+1][rowNum]//that variable should be 'r' or 'b'
+        if (rightColor === that.boardState.player) {
+          count++;
+        }else{
+          count = 0;
+        }
+      };
+      console.log("count right: "+count);
+      return count;
+    };
 
-  game = new Game();
+
+    var countColorLeft = function(rowNum, colNum) {
+      var count = 0
+      for(var x = (colNum-1); x>0; x--) {
+        var leftColor = that.boardState.boardArray[colNum-1][rowNum]
+        if (leftColor === that.boardState.player) {
+          count++;
+        }else{
+          count = 0;
+        }
+      };
+      console.log("count left: "+count);
+      return count;
+    };
+
+    var countColorUp = function(rowNum, colNum) {
+      var count = 0
+      for(var x = (rowNum+1); x<6; x++) {
+        var upColor = that.boardState.boardArray[colNum][rowNum+1]
+        if (upColor === that.boardState.player) {
+          count++;
+        }else{
+          count = 0;
+        }
+      };
+      console.log("count up: "+count);
+      return count;
+    };
 
 
+    var countColorDown = function(rowNum, colNum) {
+      var count = 0
+      for(var x = (rowNum-1); x>0; x--) {
+        var downColor = that.boardState.boardArray[colNum][rowNum-1]
+        if (downColor === that.boardState.player) {
+          count++;
+        }else{
+          count = 0;
+        }
+      };
+      console.log("count down: "+count);
+      return count;
+    };
 
+    var horizontalWinCheck = 1 + countColorRight(rowNum, colNum) + countColorLeft(rowNum, colNum);
+    var verticalWinCheck = 1 + countColorUp(rowNum, colNum) + countColorDown(rowNum, colNum);
 
+    // if ((horizontalWinCheck || verticalWinCheck) >= 4) {
+    //   alert(that.boardState.player + " wins!");
+    // };
+  }
 
-
-
-
-
-
-
+  var game = new Game();
 
 
 });
