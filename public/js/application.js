@@ -6,7 +6,6 @@ $(document).ready(function() {
   // See: http://docs.jquery.com/Tutorials:Introducing_$(document).ready()
 
 
-});
 
 // CONTROLLER \\
   // call function to check which column was clicked based on event info
@@ -75,18 +74,34 @@ var renderBoard = function(boardState){
 }
 
 
-$('table').click(function(event){
-  that = this;
-  currentCol(that);
+$('table').click(function(){
+  var currentColString = this.firstElementChild.firstElementChild.firstElementChild.classList[0]
+  var currentColNum = currentColString[currentColString.length-1]
+  updateBoardState(currentColNum); // pass the column number to new function that updates the array
+  console.log(currentColNum);
+  debugger;
 })
 
-var currentCol = function(clickArea){
-  clickArea['<table>']['']
+var updateBoardState = function(clickedColumnNumber){
+  // big function that takes the clickedColumnNumber and checks the boardState array to find the first cell that is empty and updates that with either 'r' or 'b' depending on boardState.player
 }
 
 
 
 
 
-
 var game = new Game();
+
+
+
+
+
+
+
+
+
+
+
+
+
+});
